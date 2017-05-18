@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchWeather } from '../actions/index';
 
-export default class SearchBar extends Component {
+class SearchBar extends Component {
 
   constructor(props){
     super(props);
@@ -9,6 +12,7 @@ export default class SearchBar extends Component {
     // If you're ever passing a callback around as a function like this and that callback // has a reference to this, you need to bing with the context
     // Error: I don't know what setState is
     this.onInputChange = this.onInputChange.bind(this);
+    this.onFormSubmit = this.onFormSubmit.bind(this);
   }
 
   onInputChange(event){
@@ -20,6 +24,10 @@ export default class SearchBar extends Component {
   onFormSubmit(event){
     event.preventDefault(); // browser don't submit the form-control
     // We need to go and fetch weather data
+    // http://openweathermap.org/forecast5
+    this.props.fetchWeather(this.state.term);
+    this.setState({ term: '' });
+
   }
 
   render() {
@@ -37,3 +45,9 @@ export default class SearchBar extends Component {
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchWeather }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(SearchBar);
